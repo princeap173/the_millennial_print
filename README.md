@@ -20,6 +20,7 @@ Technologies Used:
 6)MongoDB
 7)MySQL
 8)GoormIDE Container
+9)NodeJS
 
 
 Techniques Implemented:
@@ -31,3 +32,5 @@ Multistage download
 
 3)REST API's
 
+The main backend file is app2.js in the workspace folder.
+The HTML pages are in the views folder.
