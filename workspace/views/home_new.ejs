@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>News_website</title>
+		<!-- Latest compiled and minified CSS -->
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-				BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+	<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.2.0/css/all.css" integrity="sha384-hWVjflwFxL6sNzntih27bfxkr27PmbbK/iSvJ+a4+0owXq79v+lsFkW54bOGbiDQ" crossorigin="anonymous">
+	<script src="https://code.jquery.com/jquery-3.4.1.js"
+  integrity="sha256-WpOohJOqMqqyKL9FccASB9O0KwACQJpFTUBLTYOVvVU="
+  crossorigin="anonymous"></script>
+  <script src= 
+  "https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"> 
+      </script> 
+        <link href="https://fonts.googleapis.com/css?family=Montez" rel="stylesheet">
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css">
+        <link href="https://fonts.googleapis.com/css?family=Cookie" rel="stylesheet" type="text/css">
+		<script>
+			var obj={
+				timer:null,
+                imgarr:new Array(),
+                imglinkarr:new Array(),
+                val:0,
+				imgval:0,
+                resarr:null,
+				updatearr:null,
+				xhr:new XMLHttpRequest(),
+				getElements:function()
+				{
+					/*obj.xhr.open("get","/home/new_page/elements",true);
+					obj.xhr.responseType="json";
+					obj.xhr.onloadend=obj.next;
+					obj.xhr.timeout=2000;
+					obj.xhr.ontimeout=obj.timeFunc;
+					obj.xhr.send();
+					*/
+					console.log("In get elements function....");
+					 obj.xhr=$.ajax("/home/new/elements",
+      								{dataType:"json",
+    				  				success:function(result){
+										obj.next(result);
+									}});
+					
+					},
+				next:function(result)
+				{   
+					if(!obj.resarr)
+					{
+					    console.log("In next function");
+                        obj.resarr=result;
+						console.log(result);
+						//console.log(obj.xhr);
+						obj.xhr.abort();
+						//console.log(obj.xhr);
+                        obj.nextFunc(obj.val);
+					}
+					else
+					{
+                    	var res=result;
+						console.log(res);
+                    	var li=document.createElement("li");
+						li.setAttribute("class","list-group-item");
+                   		var h3=document.createElement("h3");
+                   		var div=document.createElement("div");
+                   		var p=document.createElement("p");
+                    	var img=document.createElement("img");
+						img.setAttribute("style","margin-right:10%;")
+                        var a=document.createElement("a");
+                  	    var h4=document.createElement("h4");
+                       // var hr=document.createElement("hr");
+                        obj.imgarr[obj.val]=img;
+                        obj.imglinkarr[obj.val]=res.image;
+                        a.href="/home/"+res._id;
+						a.setAttribute("style","padding-left:10%")
+                        img.style="width:100px;height:100px;margin-left:15px;"
+                        a.innerHTML=res.title;
+                        h3.appendChild(img);
+                        h3.appendChild(a);
+                        h4.style="padding-left:10%;margin-top:-2%";
+                        h4.innerHTML="by:"+res.author+"date:"+res.date;
+                        p.appendChild(h3);
+                        p.appendChild(h4);
+                        div.appendChild(p);
+                       li.appendChild(div);
+                       //li.appendChild(hr);
+                       //document.body.appendChild(li);
+						$("#list").append(li);
+					   console.log("Logging li ..... ")
+					   console.log(li);
+                      if(obj.resarr.length>obj.val+1)
+                      {
+						 obj.val++; 
+                         obj.nextFunc(obj.val);
+                      }
+					  else
+					  {
+						obj.imgAdd();	  
+					  }
+					}	
+					
+				},
+				 imgAdd:function()
+                {
+                    
+					obj.xhr.abort();
+                    obj.xhr=null;
+                    /* obj.xhr=new XMLHttpRequest();
+                       obj.xhr.open("get",obj.imglinkarr[obj.imgval],true);
+                       obj.xhr.onloadend=obj.setImage;
+                       obj.xhr.responseType="blob";
+                       obj.xhr.send();
+					*/
+					obj.xhr=$.ajax(obj.imglinkarr[obj.imgval],
+								   {xhrFields:{
+									   responseType:"blob"
+								   },
+									success:function(result){
+										console.log("Success...")
+										obj.setImage(result);
+							},
+							error:function(result)
+							{
+								obj.errorImage(result);
+							}
+							});
+					console.log(obj.xhr);
+					
+                },
+				errorImage:function(result)
+				{
+					if(obj.imgval<obj.val)
+					{
+						obj.imgval++;
+						obj.imgAdd();
+					}
+					else
+					{
+						obj.getUpdates();
+					}
+					
+				},
+                setImage:function(result)
+                {
+					if(result && obj.xhr.status==200)
+                    {
+						var url=URL.createObjectURL(result);
+						console.log("Inside the set image function for imgval=",obj.imgval);
+						console.log(obj.xhr);
+                    	obj.imgarr[obj.imgval].src=url;
+					}
+					if(obj.imgval<obj.val)
+					{
+						obj.imgval++;
+						obj.imgAdd();
+					}
+					else
+					{
+						obj.getUpdates();
+					}
+
+                },
+                nextFunc:function(val)
+                {
+                   		
+						
+						if(!obj.xhr)
+						{
+							
+						}
+						else
+						{	obj.xhr.abort();
+						}
+						console.log("res arr is",obj.resarr);
+						console.log("val=",val);
+						console.log(obj.resarr[val]);
+                    	obj.xhr=$.ajax("/home/newele/"+obj.resarr[val],
+								{dataType:"json",
+								success:function(result){
+									obj.next(result);
+								}});
+						//obj.xhr.responseType="json";
+                    	//obj.xhr.onloadend=obj.next;
+                    	//obj.xhr.send();
+			
+                },
+				timeFunc:function()
+				{
+					
+				},
+				getUpdates:function()
+				{
+					
+					obj.xhr.abort();
+					//obj.xhr=new XMLHttpRequest();
+					//obj.xhr.open("get","/home/new_page/elements",true);
+					//obj.xhr.responseType="json";
+					//obj.xhr.onloadend=obj.updateEle;
+					//obj.xhr.send();
+					console.log("In get updates function");
+					obj.xhr=$.ajax("/home/new/elements",{dataType:"json",
+															 success:function(result){
+																 obj.updateEle(result);
+															 }});
+				},
+				updateEle:function(result)
+				{
+					
+					obj.updatearr=result;
+					if(obj.updatearr.length>obj.resarr.length)
+					{
+						
+						obj.xhr=null;
+						obj.resarr=obj.updatearr;
+						obj.val++;
+						obj.nextFunc(obj.val);
+					}
+					else
+					{	setTimeout(obj.getUpdates,5000);
+					}
+				}
+			}
+			
+		</script>
+	</head>
+	<body onload="obj.getElements()">
+		 <nav class="navbar navbar-inverse">
+            <div class="container-fluid">
+                <div class="navbar-header">
+                    <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#myNavbar">
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    </button>
+                    <div id="navbar-brand" style="padding-top: 5px;">
+                        <a href="/home" style="text-decoration: none;color: white">
+                            <h2 style="font-family: 'Montez', cursive;margin: 1px 1px"><i class="fas fa-keyboard"></i> The Millenial Print</h2>
+                        </a>
+                    </div>
+                </div>
+                <div class="collapse navbar-collapse" id="myNavbar">
+                    <ul class="nav navbar-nav">
+                        <li><a href="/about">About Us</a></li>
+                    </ul>
+                    <ul class="nav navbar-nav navbar-right">
+						<li><a href="/pricing">Pricing</a></li>
+						<li><a href="/newsfeed">RSS Feeds</a></li>
+						<li><a href="/home/new">Create Post</a></li>
+                        <%    if(!currentUser){ %>
+                        <li><a href="/register"><span class="glyphicon glyphicon-user"></span> Sign Up</a></li>
+                        <li><a href="/signin"><span class="glyphicon glyphicon-log-in"></span> Login</a></li>
+                        <% } else{ %>
+                        <li><a href="#">Signed In As <%=currentUser.username %></a></li>
+                        <li><a href="/signout"><span class="glyphicon glyphicon-log-out"></span> Logout</a></li>
+						<li><a href="/recommendations"><span class=""></span>Recommendations</a></li>
+                        <% }%>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+<header height="40px">
+    <div class="container ">
+        <div class="jumbotron" style="background-image:url(https://images.unsplash.com/photo-1517218313419-97711ffe5493?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=500&q=60); background-size: cover;">
+            <div class="container">
+                <h1 style="font-family: 'Montez', cursive; color: azure"><i class="fas fa-keyboard"></i> The Millenial Print</h1>
+                <h4 style="font-family: 'Montez', cursive;color: azure; font-size: 2em;">If it's Millenial,you know you can trust it</h4>
+            </div>
+        </div>
+    </div>
+</header>
+<hr>
+<ul class="list-group" id="list">
+	
+		</ul>
+<% include partials/footer %>

@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>News_website</title>
+		<!-- Latest compiled and minified CSS -->
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-				BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+	<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.2.0/css/all.css" integrity="sha384-hWVjflwFxL6sNzntih27bfxkr27PmbbK/iSvJ+a4+0owXq79v+lsFkW54bOGbiDQ" crossorigin="anonymous">
+        <link href="https://fonts.googleapis.com/css?family=Montez" rel="stylesheet">
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css">
+        <link href="https://fonts.googleapis.com/css?family=Cookie" rel="stylesheet" type="text/css">
+		  <script> 
+            var obj={
+                xhr:new XMLHttpRequest(),
+                getdata:function()
+                {
+                    obj.xhr.open("get","https://rssfeeds.run-ap-south1.goorm.io","true");
+                    obj.xhr.onloadend=obj.dispval;
+                    obj.xhr.responseType="document";
+                    obj.xhr.send();
+                },
+                dispval:function()
+                {
+					console.log(obj.xhr.responseXML.documentElement);
+                   var ul=document.getElementById("list");
+                    ul.innerHTML="";
+                    var root=obj.xhr.responseXML.documentElement;
+					console.log(root);
+                  	console.log(root.getElementsByTagName("channel"));
+		             var ctitle=root.getElementsByTagName("title");
+		              ctitle=ctitle[0];
+		            var	clink=root.getElementsByTagName("link");
+		   			 clink=clink[0];
+					 var canch=document.createElement("a");
+		   			 canch.innerHTML=ctitle.innerHTML;
+		   			 console.log(clink.nextSibling.nodeValue);
+		  			  canch.href=clink.nextSibling.nodeValue;
+		    			console.log(clink);
+		 			   console.log(clink.innerHTML);
+          			  document.getElementById("header").innerHTML="";
+		    		document.getElementById("header").appendChild(canch);
+                   // console.log(root.innerHTML);
+                    var ttl=root.getElementsByTagName("ttl");
+                    var ttl=2;
+                    console.log(ttl*1000);
+                    var li=root.getElementsByTagName("item");
+                    for(i=0;i<li.length;i=i+1)
+                    {
+                        var val=0;
+                        var node=document.createElement("li");
+                        var a=document.createElement("a");
+                        var ele=document.createElement("div");
+                        console.log(i);
+                        var text= li[i].getElementsByTagName("description")[0].innerHTML;
+                        if(text.length<200)
+                        {    ele.innerHTML=text;}
+                        else
+                        {
+                            ele.innerHTML=text.substring(0,200);
+                            var extra=text.substring(200);
+                            var span=document.createElement("span");
+                            span.innerHTML="<a href='#'> more....</a>";
+                            span.myparam=extra;
+                            span.addEventListener("click",obj.showMore);
+                            ele.appendChild(span);
+                            span.val=0;
+                        }
+                        a.innerHTML=li[i].getElementsByTagName("title")[0].innerHTML;
+                        console.log(li[i]);
+                        a.href=li[i].getElementsByTagName("link")[0].innerHTML;
+                        console.log(li[i].getElementsByTagName("link")[0].innerHTML)
+                        node.appendChild(a);
+                        node.appendChild(ele);
+                        node.setAttribute("class","list-group-item");
+                        ul.appendChild(node);
+
+                    }
+                   setInterval(obj.getdata,ttl*1000);
+                
+                },
+                showMore:function(event)
+                {
+                    if(event.currentTarget.val==0)
+                    {event.currentTarget.innerHTML=event.currentTarget.myparam;
+                    event.currentTarget.val=1;
+                    }
+                    else
+                    {
+                        event.currentTarget.innerHTML="<a href='#'>more..</a>";
+                        event.currentTarget.val=0;
+                    }
+                  
+                }
+            }
+        </script>
+	</head>
+	<body onload="obj.getdata()">
+		 <nav class="navbar navbar-inverse">
+            <div class="container-fluid">
+                <div class="navbar-header">
+                    <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#myNavbar">
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    </button>
+                    <div id="navbar-brand" style="padding-top: 5px;">
+                        <a href="/home" style="text-decoration: none;color: white">
+                            <h2 style="font-family: 'Montez', cursive;margin: 1px 1px"><i class="fas fa-keyboard"></i> The Millenial Print</h2>
+                        </a>
+                    </div>
+                </div>
+                <div class="collapse navbar-collapse" id="myNavbar">
+                    <ul class="nav navbar-nav">
+                        <li><a href="/about">About Us</a></li>
+                    </ul>
+                    <ul class="nav navbar-nav navbar-right">
+						<li><a href="/pricing">Pricing</a></li>
+						<li><a href="/rss">RSS Feeds</a></li>
+						<li><a href="/home/new">Create Post</a></li>
+                        <%    if(!currentUser){ %>
+                        <li><a href="/register"><span class="glyphicon glyphicon-user"></span> Sign Up</a></li>
+                        <li><a href="/signin"><span class="glyphicon glyphicon-log-in"></span> Login</a></li>
+                        <% } else{ %>
+                        <li><a href="#">Signed In As <%=currentUser.username %></a></li>
+                        <li><a href="/signout"><span class="glyphicon glyphicon-log-out"></span> Logout</a></li>
+                        <% }%>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+<header height="40px">
+    <div class="container ">
+        <div class="jumbotron" style="background-image:url(https://images.unsplash.com/photo-1517218313419-97711ffe5493?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=500&q=60); background-size: cover;">
+            <div class="container">
+                <h1 style="font-family: 'Montez', cursive; color: azure"><i class="fas fa-keyboard"></i> The Millenial Print</h1>
+                <h4 style="font-family: 'Montez', cursive;color: azure; font-size: 2em;">If it's Millenial,you know you can trust it</h4>
+            </div>
+        </div>
+    </div>
+</header>
+<hr>
+  <h1 id="header"></h1>
+    <body onload="obj.getdata()" style="text-align: center;">
+        <ul type="none" id="list" class="list-group"></ul>
+		</body>		

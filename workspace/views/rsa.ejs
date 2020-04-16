@@ -1,0 +1,84 @@
+<html>
+<head>
+		<title>RSA Algorithm Implementation</title>
+		<!-- Latest compiled and minified CSS -->
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-				BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+	<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.2.0/css/all.css" integrity="sha384-hWVjflwFxL6sNzntih27bfxkr27PmbbK/iSvJ+a4+0owXq79v+lsFkW54bOGbiDQ" crossorigin="anonymous">
+	<link href="https://fonts.googleapis.com/css2?family=Open+Sans:ital@1&display=swap" rel="stylesheet">
+        <link href="https://fonts.googleapis.com/css?family=Montez" rel="stylesheet">
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css">
+        <link href="https://fonts.googleapis.com/css?family=Cookie" rel="stylesheet" type="text/css">
+	<script>
+		var xhr=new XMLHttpRequest();
+		function getData()
+		{
+			console.log("In get Data function....");
+			data = document.getElementById("data");
+			content=document.getElementById("content");
+			xhr.open("get","https://rsa-wefei.run-ap-south1.goorm.io/"+data.value+"/"+data2.value,true);
+			xhr.onloadend=dispData;
+			xhr.send();
+			console.log(xhr);
+		}
+		
+		function dispData()
+		{
+			content.innerHTML=""
+			var list=xhr.response.split("\n");
+			var ul=document.createElement("ul");
+			ul.setAttribute("class","list-group list-group-flush");
+			list.forEach(function(el){
+				var li=document.createElement("li");
+				li.setAttribute("class","list-group-item");
+				li.setAttribute("style","width:90%;font-family: 'Open Sans', sans-serif;")
+				li.innerHTML=el;
+				ul.append(li);
+			});
+			content.append(ul);
+			//document.getElementById("content").innerHTML="<pre>"+xhr.response+"</pre>";
+		}
+		
+	</script>
+	</head>
+	<body>
+			 <nav class="navbar navbar-inverse">
+            <div class="container-fluid">
+                <div class="navbar-header">
+                    <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#myNavbar">
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    </button>
+                    <div id="navbar-brand" style="padding-top: 5px;">
+                        <a href="/rsa" style="text-decoration: none;color: white">
+                            <h2 style="font-family: 'Montez', cursive;margin: 1px 1px"><i class="fas fa-keyboard"></i> RSA Encryption Implementation</h2>
+                        </a>
+                    </div>
+                </div>
+                <div class="collapse navbar-collapse" id="myNavbar">
+                    <ul class="nav navbar-nav navbar-right">
+						<li><a href="/mainc">Main Code</a></li>
+						<li><a href="/lpg">Large Prime Generator</a></li>
+						<li><a href="/rsa">RSA Implementation</a></li>
+                     
+                    </ul>
+                </div>
+            </div>
+        </nav>
+<div class="container">
+    <div class="row">
+        <h1 style="text-align:center">RSA Algorithm Implementation</h1>
+        <div style="width:30%;margin:25px auto">
+                <div class="form-group"><input type="text" id="data" class="form-control" placeholder="Enter the text to be encrypted" name="username"></div>
+				
+                <div class="form-group"><input type="text" id="data2" class="form-control" placeholder="Enter the number of bits of the prime number" name="username"></div>
+                <div class="form-group"><button  onclick="getData()" class="btn btn-primary btn-lg btn-block">Submit</button></div>
+				
+        </div>
+    </div>
+</div>
+		
+	<div id="content" style="padding-left:0;margin-left:0">
+				
+			</div>
+<%include partials/footer%>

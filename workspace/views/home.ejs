@@ -1,0 +1,29 @@
+<% include partials/header %>
+<header height="40px">
+    <div class="container ">
+        <div class="jumbotron" style="background-image:url(https://images.unsplash.com/photo-1517218313419-97711ffe5493?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=500&q=60); background-size: cover;">
+            <div class="container">
+                <h1 style="font-family: 'Montez', cursive; color: azure"><i class="fas fa-keyboard"></i> The Millenial Print</h1>
+                <h4 style="font-family: 'Montez', cursive;color: azure; font-size: 2em;">If it's Millenial,you know you can trust it</h4>
+            </div>
+        </div>
+    </div>
+</header>
+<hr>
+<% contents.forEach(function(con){ %>
+					 <li>
+						 	<div><p>
+								 <h3 >
+								<img src="<%= con.image %>"  style="width:100px;height:100px;margin-left:15px;">
+								<a href="/home/<%=con._id%>"><%= con.title %></a></h3>
+						 	 %>
+								<h4 style="padding-left:10%;margin-top:-2.5%">
+									by:<%= con.author %>  date:<%= con.date %>
+								</h4>
+								</p>
+							</div>
+						 
+					<hr>
+					</li> 
+					 <% }); %>
+<% include partials/footer %>

@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>News_website</title>
+		<!-- Latest compiled and minified CSS -->
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-				BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+	<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.2.0/css/all.css" integrity="sha384-hWVjflwFxL6sNzntih27bfxkr27PmbbK/iSvJ+a4+0owXq79v+lsFkW54bOGbiDQ" crossorigin="anonymous">
+        <link href="https://fonts.googleapis.com/css?family=Montez" rel="stylesheet">
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css">
+        <link href="https://fonts.googleapis.com/css?family=Cookie" rel="stylesheet" type="text/css">
+		<script src="https://code.jquery.com/jquery-3.4.1.js"
+  integrity="sha256-WpOohJOqMqqyKL9FccASB9O0KwACQJpFTUBLTYOVvVU="
+  crossorigin="anonymous"></script>
+  <script src= 
+  "https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"> 
+      </script> 
+		<style>
+			btn
+			{
+				margin-top:1%,
+				padding-left:10%,
+					
+				
+			}
+		</style>
+		<script>
+			
+			
+			
+			
+			
+			function diff(first,second)
+			{
+			    var difference = first.filter(x => second.indexOf(x) === -1);
+				return difference;
+
+			}
+			
+			
+			
+			function getID()
+			{
+				var pos=window.location.href.indexOf("/home");
+				var str=window.location.href.substr(0,pos)+"/news"+window.location.href.substr(pos+5);
+				console.log(str);
+				return str;
+			}
+			
+			
+			function get2ID()
+			{
+				var pos=window.location.href.indexOf("/home");
+				var str=window.location.href.substr(0,pos)+"/news"+window.location.href.substr(pos+5);
+				console.log(str);
+				return str;
+			}
+			
+			
+			function getCommID(val)
+			{
+				var pos=window.location.href.indexOf("/home");
+				var str=window.location.href.substr(0,pos)+"/comments/"+obj.el.comments[val];
+				console.log(str);
+				return str;
+			}
+			
+			
+			
+			
+			
+			function sendRating()
+			{
+				
+				var alert=document.getElementById("alert");
+				var rating=document.getElementById("rating");
+				if(!rating.value)
+				{
+					alert.setAttribute("class","alert alert-info");
+					alert.innerHTML="You need to enter a value first";
+					return;
+					
+				}
+			
+				if(!obj.user)
+				{
+					alert.setAttribute("class","alert alert-info");
+					alert.innerHTML="You need to be logged in first";
+					return;
+				}
+				
+			    alertXhr=new XMLHttpRequest();
+				alertXhr.open("post","/ratings/"+obj.user.num+"/"+obj.el.num,true);
+				alertXhr.onloadend=dispRatingData;
+				alertXhr.setRequestHeader("Content-type","application/x-www-form-urlencoded");
+				alertXhr.send("val="+rating.value);
+			}
+			
+			
+			function dispRatingData()
+			{
+				if(alertXhr.responseText=="Rated Successfully")
+				{
+						var alert=document.getElementById("alert");	
+						alert.setAttribute("class","alert alert-success");
+						alert.innerHTML="Rated Successfully";
+				}
+			}
+			
+			
+			var obj={
+				user:null,
+				el:null,
+				com:null,
+				comReqArr:new Array(),
+				val:0,
+				xhr:null,
+				getData:function()
+				{
+					/*obj.xhr.open("get",getID(),true);
+					obj.xhr.responseType="json";
+					obj.xhr.onloadend=obj.dispData;
+					obj.xhr.send();*/
+					
+					obj.xhr=$.ajax(getID(),{dataType:"json",
+											success:function(result)
+											{
+												
+													obj.dispData(result);
+											}
+										   })
+					
+				},
+				dispData:function(result)
+				{
+					obj.el=result;
+					console.log(result);
+					obj.xhr.abort();
+					document.getElementById("img_id").src=obj.el.image;
+					obj.getUser();
+				},
+				getUser:function()
+				{
+					/*
+					obj.xhr.open("get","/user",true);
+					obj.xhr.onloadend=obj.setUser;
+					obj.xhr.responseType="json";
+					obj.xhr.send();
+					*/
+					console.log("In get user function .... ")
+					obj.xhr=$.ajax("/user",{dataType:"json",
+										   success:function(result){
+											   console.log("In success function for get user");
+											   if(result.username)
+													obj.setUser(result);
+											   else
+												   obj.setUser();
+										   }
+										   
+										   })
+				},
+				setUser:function(result)
+				{
+					console.log("In set User function...");
+					obj.user=result;
+					console.log(result);
+					console.log("In set User function ... ");
+					console.log("will exit the function");
+					if(obj.val<obj.el.comments.length)
+					{	obj.getComments(obj.val++);
+					}
+				},
+				getComments:function(val)
+				{
+					obj.xhr.abort();
+					console.log("In get Comments function....");
+					console.log(getCommID(val));
+					if(!obj.comReqArr[getCommID(val)])
+					{	obj.comReqArr[getCommID(val)]=1;
+						/*
+					 	obj.xhr.open("get",getCommID(val),true);
+						obj.xhr.onloadend=obj.setComments;
+						obj.xhr.responseType="json";
+						obj.xhr.send();
+						*/
+					 	obj.xhr=$.ajax(getCommID(val),{dataType:"json",
+													  success:function(result)
+													  {
+														  obj.setComments(result);
+													  }
+													  })
+					 
+				}
+				},
+				setComments:function(result)
+				{
+					if(!obj.com)
+					{
+						obj.com=document.getElementById("comm");		
+					}
+					if(result)
+					{	var comm=result;
+						var div1=document.createElement("ul");
+						div1.setAttribute("id",obj.el.comments[obj.val-1]);
+						div1.setAttribute("class","row list-group-item");
+						var div2=document.createElement("div");
+						div2.setAttribute("class","col-md-12");
+						var strong=document.createElement("strong");
+						strong.innerHTML=comm.name;
+						var p=document.createElement("p");
+						p.innerHTML=comm.comment;
+						div2.appendChild(strong);
+						div2.appendChild(p);
+						div1.appendChild(div2);
+						if(obj.user && obj.user.username==comm.name)
+						{
+							var a=document.createElement("a");
+							a.setAttribute("class", "btn btn-warning");
+							a.href="/home/"+comm.id_parent+"/comments/"+comm._id+"/edit";
+							a.innerHTML="Edit";
+							var form =document.createElement("form");
+							form.style="display:inline;";
+							form.setAttribute("action","/home/"+comm.id_parent+"/comments/"+comm._id+"?_method=DELETE");
+							form.setAttribute("method","POST");
+							var button=document.createElement("button");
+							button.setAttribute("class","btn btn-danger");
+							button.innerHTML="Delete";
+							form.appendChild(button);
+							div1.appendChild(a);
+							div1.appendChild(form);
+
+						}
+						var a2=document.createElement("a");
+						a2.setAttribute("class","btn btn-info");
+						a2.style="display:inline;";
+						a2.href="/home/"+comm.id_parent+"/comments/"+comm._id+"/replies";
+						a2.innerHTML="view replies";
+						div1.appendChild(a2);
+						obj.com.appendChild(div1);
+					}
+				if(obj.val<obj.el.comments.length)
+				{
+					obj.getComments(obj.val++);
+				}
+				else
+				{
+					window.setInterval(obj.getRefresh,10000);
+				}
+				},
+				getRefresh:function()
+				{
+					obj.xhr.abort();
+					/*
+					obj.xhr.open("get",window.location.href+"/commentsArray",true);
+					obj.xhr.onloadend=obj.checkRefresh;
+					obj.xhr.responseType="json";
+					obj.xhr.send();
+					*/
+					obj.xhr=$.ajax(window.location.href+"/commentsArray",{dataType:"json",
+																		 success:function(result)
+																		 {
+																			obj.checkRefresh(result);	 
+																		 }
+																		 })
+				},
+				checkRefresh:function(result)
+				{
+					var arr=result;
+					console.log(arr);
+					/*if(arr!=obj.el.comments)
+					{
+						var diffarr=diff(obj.el.comments,arr);
+						diffarr.forEach(function(id)
+						{
+							console.log(document.getElementById(id));
+							obj.com.removeChild(document.getElementById(id));
+						});
+						
+						console.log(obj.el.comments);
+						obj.el.comments=diff(obj.el.comments,diffarr);
+						console.log(obj.el.comments);
+						
+						diffarr=diff(arr,obj.el.comments);
+						obj.val=obj.el.comments.length;
+						obj.el.comments.concat(diffarr);
+						if(diffarr.length>0)
+						{
+							obj.getComments(obj.val);
+						}
+					}*/
+					if(arr!=obj.el.comments)
+					{
+						var diffarr=diff(arr,obj.el.comments);
+						var diff2=diff(obj.el.comments,arr);
+						console.log("diff2=",diff2);
+						obj.val=obj.el.comments-diff2.length;
+						diff2.forEach(function(id)
+						{
+							console.log(document.getElementById(id));
+							obj.com.removeChild(document.getElementById(id));
+						});
+						if(diffarr.length>0)
+						{
+							console.log(diffarr);
+							console.log(obj.el.comments.length);
+							var a=obj.el.comments.length;
+							diffarr.forEach(function(val){
+								obj.el.comments[a++]=val;
+							});
+							console.log(obj.el.comments.length);
+							obj.getComments(obj.val);
+						}
+						
+							
+					}
+					
+					
+				}
+		}
+			
+		</script>
+	</head>
+	<body onload="obj.getData()">
+		 <nav class="navbar navbar-inverse">
+            <div class="container-fluid">
+                <div class="navbar-header">
+                    <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#myNavbar">
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    </button>
+                    <div id="navbar-brand" style="padding-top: 5px;">
+                        <a href="/home1" style="text-decoration: none;color: white">
+                            <h2 style="font-family: 'Montez', cursive;margin: 1px 1px"><i class="fas fa-keyboard"></i> The Millenial Print</h2>
+                        </a>
+                    </div>
+                </div>
+                <div class="collapse navbar-collapse" id="myNavbar">
+                    <ul class="nav navbar-nav">
+                        <li><a href="/about">About Us</a></li>
+                    </ul>
+                    <ul class="nav navbar-nav navbar-right">
+						<li><a href="/pricing">Pricing</a></li>
+						<li><a href="/home/new">Create Post</a></li>
+                        <%    if(!currentUser){ %>
+                        <li><a href="/register"><span class="glyphicon glyphicon-user"></span> Sign Up</a></li>
+                        <li><a href="/signin"><span class="glyphicon glyphicon-log-in"></span> Login</a></li>
+                        <% } else{ %>
+                        <li><a href="#">Signed In As <%=currentUser.username %></a></li>
+                        <li><a href="/signout"><span class="glyphicon glyphicon-log-out"></span> Logout</a></li>
+                        <% }%>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+		
+<div class="container">
+<p class="lead"> <h1><%= el.title %></h1></p>
+<div class="row">
+    
+    <div class="col-md-9">
+        <div class="thumbnail">
+            <img src="" id="img_id" width=900px height=700px style="margin-left:0%;margin-right:-3%">
+            <div class="caption-full caption"></div>
+            
+               
+                <h4> by :<%= el.author %> <br>
+				Email: <%= el.author_email %> </h4>
+			<% if(currentUser && el.author==currentUser.username){%>
+			<a class="btn btn-warning" href="/home/<%=el._id%>/edit">Edit</a>
+			<form style="display:inline;" action="/home/<%=el._id%>?_method=DELETE" Method="POST">
+				<button class="btn btn-danger">
+					Delete
+				</button>
+			</form>
+			<%}%>
+					
+
+      		<hr>
+			<div ><%= el.content  %><%=console.log(el.comments)%> </div>
+        </div>
+		
+		<div>
+			<input type="number"  id="rating" min="1" max="5" style="width:40%;" placeholder="Rate on a basis of 1 to 5">
+			<button class="btn btn-primary btn-xs"  onclick="sendRating()">
+				Rate
+			</button>	
+		</div>
+		
+		<br/> 
+		<div id="alert">
+			
+		</div>
+		
+		<br/>
+        <div class="well">
+            <div class="text-right" ><a class="btn btn-success" href="/home/<%=el._id %>/comments/new">Add new comment</a></div>
+            <hr>
+            <ul id="comm" class="list-group">
+				
+			</ul>
+        </div>
+    </div>
+</div>
+</p>
+<%include partials/footer%>

@@ -1,0 +1,100 @@
+<html>
+<head>
+		<title>News_website</title>
+		<!-- Latest compiled and minified CSS -->
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-				BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+	<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.2.0/css/all.css" integrity="sha384-hWVjflwFxL6sNzntih27bfxkr27PmbbK/iSvJ+a4+0owXq79v+lsFkW54bOGbiDQ" crossorigin="anonymous">
+	
+	<link href="https://fonts.googleapis.com/css2?family=Open+Sans:ital@1&display=swap" rel="stylesheet">
+        <link href="https://fonts.googleapis.com/css?family=Montez" rel="stylesheet">
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css">
+        <link href="https://fonts.googleapis.com/css?family=Cookie" rel="stylesheet" type="text/css">
+	<script>
+		var xhr=new XMLHttpRequest();
+		function getData()
+		{
+			console.log("In get Data function....");
+			data = document.getElementById("data");
+			xhr.open("get","https://rsa-wefei.run-ap-south1.goorm.io/"+data.value,true);
+			xhr.onloadend=dispData;
+			xhr.send();
+			console.log(xhr);
+		}
+		
+		function dispData()
+		{
+			document.getElementsByTagName("body")[0].append(xhr.response);
+		}
+		
+	</script>
+	</head>
+	<body style="font-family: 'Open Sans', sans-serif;">
+			 <nav class="navbar navbar-inverse">
+            <div class="container-fluid">
+                <div class="navbar-header">
+                    <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#myNavbar">
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    </button>
+                    <div id="navbar-brand" style="padding-top: 5px;">
+                        <a href="/home" style="text-decoration: none;color: white">
+                            <h2 style="font-family: 'Montez', cursive;margin: 1px 1px"><i class="fas fa-keyboard"></i> RSA Encryption Implementation</h2>
+                        </a>
+                    </div>
+                </div>
+                <div class="collapse navbar-collapse" id="myNavbar">
+                    <ul class="nav navbar-nav navbar-right">
+						<li><a href="/mainc">Main Code</a></li>
+						<li><a href="/lpg">Large Prime Generator</a></li>
+						<li><a href="/rsa">RSA Implementation</a></li>
+                      
+                    </ul>
+                </div>
+            </div>
+        </nav>
+<div class="container">
+    <div class="row">
+        <h1 style="text-align:center">RSA Algorithm Implementation</h1>
+		<br/>
+		<h3>
+			Large Prime Generator
+		</h3>
+		<br/>
+		<pre>
+from random import randrange, getrandbits
+
+
+def is_prime(n, k=128):             
+    if n == 2 or n == 3:
+        return True
+    if n <= 1 or n % 2 == 0:
+        return False
+    s = 0
+    r = n - 1
+    while r & 1 == 0:
+        s += 1
+        r //= 2
+    for _ in range(k):             
+        a = randrange(2, n - 1)
+        x = pow(a, r, n)
+        if x != 1 and x != n - 1:
+            j = 1
+            while j < s and x != n - 1:
+                x = pow(x, 2, n)
+                if x == 1:
+                    return False
+                j += 1
+            if x != n - 1:
+                return False
+    return True
+def generate_prime_candidate(length):
+    p = getrandbits(length)
+    p |= (1 << length - 1) | 1              
+    return p
+def generate_prime_number(length=128):
+    p = 4
+    while not is_prime(p, 128):
+        p = generate_prime_candidate(length)             
+    return p
+	</pre>

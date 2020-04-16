@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>News_website</title>
+		<!-- Latest compiled and minified CSS -->
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-				BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+	<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.2.0/css/all.css" integrity="sha384-hWVjflwFxL6sNzntih27bfxkr27PmbbK/iSvJ+a4+0owXq79v+lsFkW54bOGbiDQ" crossorigin="anonymous">
+        <link href="https://fonts.googleapis.com/css?family=Montez" rel="stylesheet">
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css">
+        <link href="https://fonts.googleapis.com/css?family=Cookie" rel="stylesheet" type="text/css">
+		<style>
+			button
+			{
+				margin-top:1%,
+				
+			}
+		</style>
+		<script>
+			 obj={
+				xhr:new XMLHttpRequest(),
+				getdata:function()
+				{
+					obj.xhr.open("get",window.location.href+)	 
+				}
+			}
+			
+		</script>
+	</head>
+	<body>
+		 <nav class="navbar navbar-inverse">
+            <div class="container-fluid">
+                <div class="navbar-header">
+                    <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#myNavbar">
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    </button>
+                    <div id="navbar-brand" style="padding-top: 5px;">
+                        <a href="/home" style="text-decoration: none;color: white">
+                            <h2 style="font-family: 'Montez', cursive;margin: 1px 1px"><i class="fas fa-keyboard"></i> The Millenial Print</h2>
+                        </a>
+                    </div>
+                </div>
+                <div class="collapse navbar-collapse" id="myNavbar">
+                    <ul class="nav navbar-nav">
+                        <li><a href="/about">About Us</a></li>
+                    </ul>
+                    <ul class="nav navbar-nav navbar-right">
+						<li><a href="/pricing">Pricing</a></li>
+						<li><a href="/home/new">Create Post</a></li>
+                        <%    if(!currentUser){ %>
+                        <li><a href="/register"><span class="glyphicon glyphicon-user"></span> Sign Up</a></li>
+                        <li><a href="/signin"><span class="glyphicon glyphicon-log-in"></span> Login</a></li>
+                        <% } else{ %>
+                        <li><a href="#">Signed In As <%=currentUser.username %></a></li>
+                        <li><a href="/signout"><span class="glyphicon glyphicon-log-out"></span> Logout</a></li>
+                        <% }%>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+		
+<div class="container">
+<p class="lead"> <h1><%= el.title %></h1></p>
+<div class="row">
+    
+    <div class="col-md-9">
+        <div class="thumbnail">
+            <img src="" id="img_id" width=900px height=700px style="margin-left:0%;margin-right:-3%">
+            <div class="caption-full caption"></div>
+            
+               
+                <h4> by <%= el.author %> <br>
+				Email:<%= el.author_email %> </h4>
+			<% if(currentUser && el.author==currentUser.username){%>
+			<a class="btn btn-warning" href="/home/<%=el._id%>/edit">Edit</a>
+			<form style="display:inline;" action="/home/<%=el._id%>?_method=DELETE" Method="POST">
+				<button class="btn btn-danger">
+					Delete
+				</button>
+			</form>
+			<%}%>
+					
+
+      		<hr>
+            <%= el.content  %>
+        </div>
+        <div class="well">
+            <div class="text-right"><a class="btn btn-success" href="/home/<%=el._id %>/comments/new">Add new comment</a></div>
+            <hr>
+            <% el.comments.forEach(function(com){ %>
+            <div class="row">
+                <div class="col-md-12">
+					<div>  <strong><%= com.name %></strong> </div>
+					<div> <p><%= com.comment %></p></div>
+                </div>
+				<div>
+					
+				<% if(currentUser && com.name==currentUser.username){%>
+					<a class="btn btn-warning" href="/home/<%=com.id_parent%>/comments/<%=com._id%>/edit">Edit</a>
+					<form style="display:inline;" action="/home/<%=com.id_parent%>/comments/<%=com._id%>?_method=DELETE" Method="POST">
+							<button class="btn btn-danger">
+								Delete
+							</button>
+					</form>
+			<%}%>
+            </div>
+			</div>
+			<div><a class="btn btn-info" style="display:inline;"href="/home/<%=com.id_parent%>/comments/<%=com._id%>/replies">View Replies</a></div>
+            <% }) %>
+        </div>
+    </div>
+</div>
+</p>
+<%include partials/footer%>

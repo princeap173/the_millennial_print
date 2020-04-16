@@ -1,0 +1,100 @@
+<% include partials/header %>
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>The Millenial Print</title>
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+        <style>
+            body {
+            background-color: #000;
+            }
+            #landing-header {
+            z-index: 1;
+            position: relative;
+            text-align: center;
+            padding-top: 40vh;
+            }
+            #landing-header h1 {
+            color: #fff;
+            }
+            .slideshow { 
+            position: fixed;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            z-index: 0;
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            }
+            .slideshow li { 
+            width: 100%;
+            height: 100%;
+            position: absolute;
+            top: 0;
+            left: 0;
+            background-size: cover;
+            background-position: 50% 50%;
+            background-repeat: no-repeat;
+            opacity: 0;
+            z-index: 0;
+            animation: imageAnimation 50s linear infinite; 
+            }
+            .slideshow li:nth-child(1) { 
+            background-image: url(https://images.unsplash.com/photo-1484100356142-db6ab6244067?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=500&q=60) 
+            }
+            .slideshow li:nth-child(2) { 
+            background-image: url(https://images.unsplash.com/photo-1524475922556-171e86798684?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=500&q=60);
+            animation-delay: 5s; 
+            }
+            .slideshow li:nth-child(3) { 
+            background-image: url(https://images.unsplash.com/photo-1522931698295-e7b4d3e4188f?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=500&q=60);
+            animation-delay: 10s; 
+            }
+            .slideshow li:nth-child(4) { 
+            background-image: url(https://images.unsplash.com/photo-1523613291588-f5284f3c06a4?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=500&q=60);
+            animation-delay: 15s; 
+            }
+            .slideshow li:nth-child(5) { 
+            background-image: url(https://images.unsplash.com/photo-1455849318743-b2233052fcff?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=500&q=60);
+            animation-delay: 20s; 
+            }
+            @keyframes imageAnimation { 
+            0% { 
+            opacity: 0; 
+            animation-timing-function: ease-in;
+            }
+            10% {
+            opacity: 1;
+            animation-timing-function: ease-out;
+            }
+            20% {
+            opacity: 1
+            }
+            30% {
+            opacity: 0
+            }
+            }
+            .no-cssanimations .slideshow li {
+            opacity: 1;
+            }
+        </style>
+    </head>
+    <body>
+        <div id="landing-header">
+            <h1 font-style="Verdana" height="40px">The Millenial Print</h1>
+            <h4 style="color:white;">If it's Millenial,you know you can trust it </h4>
+            <a href="/home1" class="btn btn-lg btn-success">Visit the home page</a>
+        </div>
+        <ul class="slideshow">
+            <li></li>
+            <li></li>
+            <li></li>
+            <li></li>
+            <li></li>
+        </ul>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/modernizr/2.8.3/modernizr.min.js" type="text/javascript" async></script>
+    </body>
+</html>
+<% include partials/footer %>

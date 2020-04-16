@@ -1,0 +1,182 @@
+<html>
+<head>
+		<title>News_website</title>
+		<!-- Latest compiled and minified CSS -->
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-				BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+	<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.2.0/css/all.css" integrity="sha384-hWVjflwFxL6sNzntih27bfxkr27PmbbK/iSvJ+a4+0owXq79v+lsFkW54bOGbiDQ" crossorigin="anonymous">
+	
+	<link href="https://fonts.googleapis.com/css2?family=Open+Sans:ital@1&display=swap" rel="stylesheet">
+        <link href="https://fonts.googleapis.com/css?family=Montez" rel="stylesheet">
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css">
+        <link href="https://fonts.googleapis.com/css?family=Cookie" rel="stylesheet" type="text/css">
+	<script>
+		var xhr=new XMLHttpRequest();
+		function getData()
+		{
+			console.log("In get Data function....");
+			data = document.getElementById("data");
+			xhr.open("get","https://rsa-wefei.run-ap-south1.goorm.io/"+data.value,true);
+			xhr.onloadend=dispData;
+			xhr.send();
+			console.log(xhr);
+		}
+		
+		function dispData()
+		{
+			document.getElementsByTagName("body")[0].append(xhr.response);
+		}
+		
+	</script>
+	</head>
+	<body style="font-family: 'Open Sans', sans-serif;">
+			 <nav class="navbar navbar-inverse">
+            <div class="container-fluid">
+                <div class="navbar-header">
+                    <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#myNavbar">
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    </button>
+                    <div id="navbar-brand" style="padding-top: 5px;">
+                        <a href="/home" style="text-decoration: none;color: white">
+                            <h2 style="font-family: 'Montez', cursive;margin: 1px 1px"><i class="fas fa-keyboard"></i> RSA Encryption Implementation</h2>
+                        </a>
+                    </div>
+                </div>
+                <div class="collapse navbar-collapse" id="myNavbar">
+                    <ul class="nav navbar-nav navbar-right">
+						<li><a href="/mainc">Main Code</a></li>
+						<li><a href="/lpg">Large Prime Generator</a></li>
+						<li><a href="/rsa">RSA Implementation</a></li>
+                      
+                    </ul>
+                </div>
+            </div>
+        </nav>
+<div class="container">
+    <div class="row">
+        <h1 style="text-align:center">RSA Algorithm Implementation</h1>
+		<br/>
+		<h3>
+			Main Code
+		</h3>
+		<br/>
+		<pre>
+import large_prime_generator
+import math
+import random
+
+n=128
+print("The value of n is:",n)
+p = large_prime_generator.generate_prime_number(n)
+q = p
+while(p==q):
+    q = large_prime_generator.generate_prime_number(n)
+
+print("Choosen primes:\np=" + str(p) + ", q=" + str(q) + "\n")
+n=p*q
+print("n = p * q = " + str(n) + "\n")
+phi=(p-1)*(q-1)
+print("Euler's function (totient) [phi(n)]: " + str(phi) + "\n")
+
+def power(x, y, p) : 
+    res = 1     # Initialize result 
+  
+    # Update x if it is more 
+    # than or equal to p 
+    x = x % p  
+      
+    if (x == 0) : 
+        return 0
+  
+    while (y > 0) : 
+          
+        # If y is odd, multiply 
+        # x with result 
+        if ((y & 1) == 1) : 
+            res = (res * x) % p 
+  
+        # y must be even now 
+        y = y >> 1      # y = y/2 
+        x = (x * x) % p 
+          
+    return res 
+
+
+
+def gcd(a, b):
+    while b != 0:
+        c = a % b
+        a = b
+        b = c
+    return a
+def modinv(a, m):                      # modular inverse of a,m is  x such that (a*x)% m = 1
+    m0 = m 
+    y = 0
+    x = 1
+    if (m == 1) : 
+        return 0
+    while (a > 1) :
+        q = a // m 
+        t = m
+        m = a % m 
+        a = t 
+        t = y
+        y = x - q * y 
+        x = t
+    if (x < 0) : 
+        x += m0 
+    return x
+
+def coprimes(a):
+    l = []
+    for x in range(3, 500,2):
+        if gcd(a, x) == 1 and modinv(x,phi) != None:
+            l.append(x)
+    for x in l:
+        if x == modinv(x,phi):
+            l.remove(x)
+    return l
+
+coprimes_list = coprimes(phi)       #creates a list for 'e'
+e = random.choice(coprimes_list)    #randomly chooses 'e'
+d=modinv(e,phi)
+print("\nYour public key is a pair of numbers (e=" + str(e) + ", n=" + str(n) + ").\n")
+print("Your private key is a pair of numbers (d=" + str(d) + ", n=" + str(n) + ").\n")
+
+def encrypt_block(m):
+    c = power(m,e,n)
+    return c
+
+def decrypt_block(c):
+    m = power(c,d,n)
+    return m
+
+
+def encrypt_string(s):
+    return ''.join([str(encrypt_block(ord(x)))+" " for x in list(s)])
+
+def decrypt_string(s):
+    return ''.join([chr(decrypt_block(int(x))) for x in s.strip().split(" ")])
+
+def rsa_func(inp):
+	print("\nPlain message: " + inp + "\n")
+	enc = encrypt_string(inp)
+	print("Encrypted message: " + enc + "\n")
+	dec = decrypt_string(enc)
+	print("Decrypted message: " + dec + "\n")
+
+
+
+
+
+
+s = input("Enter a message to encrypt: ")
+
+print("\nPlain message: " + s + "\n")
+
+enc = encrypt_string(s)
+print("Encrypted message: " + enc + "\n")
+dec = decrypt_string(enc)
+print("Decrypted message: " + dec + "\n")
+</pre>
