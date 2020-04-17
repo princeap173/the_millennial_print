@@ -1,17 +1,31 @@
-<% include partials/header%>
+<% include partials/header2%>
 <div class="container">
     <div class="row">
         <h1 style="text-align:center">Create Post</h1>
         <div style="width:30%;margin:25px auto">
-            <form action="/home" method="POST">
-                <div class="form-group"><input type="text" class="form-control" placeholder="Title" name="title"></div>
-				<div class="form-group"><input type="text" class="form-control" placeholder="category" name="category"></div>
-				<div class="form-group"><input type="text" class="form-control" placeholder="image" name="image"></div>
-                <div class="form-group"><input class="form-control" type="text" placeholder="content" name="content"></div>
-                <div class="form-group"><button class="btn btn-primary btn-lg btn-block">Submit</button></div>
+            <form name="myForm" ng-submit="ctrl.submit()" action="/home" method="POST">
+                <div class="form-group"><input type="text" ng-model="ctrl.usr.title" ng-minlength="7" required class="form-control" placeholder="Title" name="title"></div>
+					<div class="alert alert-info" ng-show="myForm.title.$error.required">This field is required</div><div class="alert alert-info" ng-show="myForm.title.$error.minlength">Minimum Seven characters</div>
+				<div class="form-group"><input type="text" ng-model="ctrl.usr.category" ng-minlength="4" required class="form-control" placeholder="category" name="category"></div>
+					<div class="alert alert-info" ng-show="myForm.category.$error.required">This field is required</div><div class="alert alert-info" ng-show="myForm.category.$error.minlength">Minimum Four characters</div>
+				<div class="form-group"><input type="text" ng-model="ctrl.usr.image" ng-minlength="15" class="form-control" required placeholder="image" name="image"></div>
+					<div class="alert alert-info" ng-show="myForm.image.$error.required">This field is required</div><div class="alert alert-info" ng-show="myForm.image.$error.minlength">Minimum Fifteen characters</div>
+                <div class="form-group"><input class="form-control" ng-model="ctrl.usr.content" ng-minlength="100" type="text" required  placeholder="content" name="content"></div>
+					<div class="alert alert-info" ng-show="myForm.title.$error.required">This field is required</div><div class="alert alert-info" ng-show="myForm.title.$error.minlength">Minimum hundred characters</div>
+                <div class="form-group"><button ng-disabled="myForm.$invalid" class="btn btn-primary btn-lg btn-block">Submit</button></div>
             </form>
             <a href="/">Go back</a>
         </div>
     </div>
 </div>
+ <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.6/angular.min.js"></script>
+			<script type="text/javascript">
+			angular.module("test",[]).controller("MainCtrl",[function(){
+			self=this;
+			self.submit=function(){
+				console.log("User submitted",self.usr);
+			}
+		
+		}])
+		</script>
 <%include partials/footer%>
