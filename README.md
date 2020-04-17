@@ -21,6 +21,7 @@ Technologies Used:
 7)MySQL
 8)GoormIDE Container
 9)NodeJS
+10)Angular JS for form validation
 
 
 Techniques Implemented:
